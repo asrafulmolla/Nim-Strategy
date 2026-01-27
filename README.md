@@ -82,4 +82,4 @@ This project is licensed under the MIT License - feel free to use and modify it!
 
 ---
 
-Developed with ❤️ by [Asraful Molla](https://github.com/asrafulmolla)
+Developed with ❤️ by [Team Falcon](https://github.com/asrafulmolla)
