@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nim Game - Minimax AI Strategy</title>
+    <meta name="description" content="Play the classic Nim Game against an unbeatable Minimax AI. Test your strategy in this beautiful, interactive web game.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <main class="app-container">
+        <header>
+            <h1 class="glow-text">Nim Strategy</h1>
+            <p class="subtitle">Can you outsmart the Minimax Algorithm?</p>
+        </header>
+
+        <section class="game-info">
+            <div class="info-card glass">
+                <h3>Rules</h3>
+                <p>On your turn, remove any number of items from <strong>exactly one</strong> pile. The player who takes the <strong>last item wins</strong>.</p>
+            </div>
+            <div id="turn-indicator" class="info-card glass active">
+                <h3>Current Turn</h3>
+                <p id="turn-text">Your Turn</p>
+            </div>
+        </section>
+
+        <section id="game-board" class="game-board">
+            <!-- Piles will be generated here -->
+        </section>
+
+        <section id="controls" class="controls glass">
+            <div id="game-status" class="status-message">Select an item to start!</div>
+            <button id="reset-btn" class="btn secondary">Reset Game</button>
+        </section>
+
+        <footer class="glass">
+            <p>© 2026 Nim Strategy | Built with Artificial Intelligence</p>
+        </footer>
+    </main>
+
+    <!-- Overlay for Game Over -->
+    <div id="game-over-overlay" class="overlay hidden">
+        <div class="modal glass">
+            <h2 id="winner-text">You Win!</h2>
+            <p id="final-state-text"></p>
+            <button id="play-again-btn" class="btn primary">Play Again</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
