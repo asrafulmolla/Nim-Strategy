@@ -1,6 +1,6 @@
 /**
  * Nim Game - Minimax AI Implementation
- * Translated and enhanced for Web from nim_game.py
+ * Ported and enhanced for Web from nim_game.py
  */
 
 class NimGame {
@@ -9,15 +9,18 @@ class NimGame {
         this.memo = new Map();
         this.isHumanTurn = true;
         this.gameActive = true;
+        this.difficulty = 'hard';
 
         // DOM Elements
         this.boardElement = document.getElementById('game-board');
         this.statusElement = document.getElementById('game-status');
+        this.aiThoughtElement = document.getElementById('ai-thought');
         this.turnText = document.getElementById('turn-text');
         this.turnIndicator = document.getElementById('turn-indicator');
         this.resetBtn = document.getElementById('reset-btn');
+        this.difficultySelect = document.getElementById('difficulty');
         this.overlay = document.getElementById('game-over-overlay');
-        this.winnerBtn = document.getElementById('play-again-btn');
+        this.playAgainBtn = document.getElementById('play-again-btn');
         this.winnerText = document.getElementById('winner-text');
         this.finalStateText = document.getElementById('final-state-text');
 
@@ -27,7 +30,11 @@ class NimGame {
     init() {
         this.renderBoard();
         this.resetBtn.addEventListener('click', () => this.resetGame());
-        this.winnerBtn.addEventListener('click', () => this.resetGame());
+        this.playAgainBtn.addEventListener('click', () => this.resetGame());
+        this.difficultySelect.addEventListener('change', (e) => {
+            this.difficulty = e.target.value;
+            this.resetGame();
+        });
         this.updateTurnUI();
     }
 
@@ -37,6 +44,7 @@ class NimGame {
         this.isHumanTurn = true;
         this.gameActive = true;
         this.overlay.classList.add('hidden');
+        this.aiThoughtElement.classList.add('hidden');
         this.renderBoard();
         this.updateTurnUI();
         this.statusElement.textContent = "Select an item to start!";
@@ -69,6 +77,8 @@ class NimGame {
 
         if (this.isGameOver(state)) {
             // Normal play: if it's your turn and no objects left, you lose.
+            // Wait, Python says if human_turn is TRUE when game is over, AI won (because AI made the last move).
+            // This means the last player to take an item wins.
             return isMaximizing ? -1 : 1;
         }
 
@@ -79,7 +89,7 @@ class NimGame {
             for (const move of moves) {
                 const res = this.minimax(this.applyMove(state, move), false);
                 bestVal = Math.max(bestVal, res);
-                if (bestVal === 1) break; // Alpha pruning for win/loss
+                if (bestVal === 1) break;
             }
             this.memo.set(stateKey, bestVal);
             return bestVal;
@@ -111,6 +121,11 @@ class NimGame {
         return bestMove;
     }
 
+    getRandomMove(state) {
+        const moves = this.getPossibleMoves(state);
+        return moves[Math.floor(Math.random() * moves.length)];
+    }
+
     handleHumanMove(pileIdx, amount) {
         if (!this.gameActive || !this.isHumanTurn) return;
 
@@ -118,27 +133,45 @@ class NimGame {
         this.renderBoard();
 
         if (this.isGameOver(this.piles)) {
-            this.endGame("CONGRATULATIONS! You won!");
+            this.endGame("🎉 CONGRATULATIONS! You won!");
             return;
         }
 
         this.isHumanTurn = false;
         this.updateTurnUI();
-        this.statusElement.textContent = `AI is thinking...`;
+        this.statusElement.textContent = `AI's Turn`;
+        this.aiThoughtElement.classList.remove('hidden');
 
-        setTimeout(() => this.aiMove(), 800);
+        // Delay for realism
+        setTimeout(() => this.aiMove(), 1200);
     }
 
     aiMove() {
-        const move = this.getBestMove(this.piles);
+        if (!this.gameActive) return;
+
+        let move;
+        if (this.difficulty === 'easy') {
+            move = this.getRandomMove(this.piles);
+        } else if (this.difficulty === 'medium') {
+            if (Math.random() < 0.5) {
+                move = this.getBestMove(this.piles);
+            } else {
+                move = this.getRandomMove(this.piles);
+            }
+        } else { // hard
+            move = this.getBestMove(this.piles);
+        }
+
         if (move) {
             this.piles[move.pileIdx] -= move.amount;
             this.renderBoard();
             this.statusElement.textContent = `AI removed ${move.amount} from Pile ${move.pileIdx + 1}`;
         }
 
+        this.aiThoughtElement.classList.add('hidden');
+
         if (this.isGameOver(this.piles)) {
-            this.endGame("GAME OVER! AI Wins!");
+            this.endGame("🤖 GAME OVER! AI Wins!");
             return;
         }
 
@@ -150,16 +183,16 @@ class NimGame {
         if (this.isHumanTurn) {
             this.turnText.textContent = "Your Turn";
             this.turnIndicator.classList.add('active');
+            this.turnIndicator.querySelector('.icon').textContent = '👤';
         } else {
             this.turnText.textContent = "AI's Turn";
             this.turnIndicator.classList.remove('active');
+            this.turnIndicator.querySelector('.icon').textContent = '🤖';
         }
-        // Re-render to update the 'disabled' state of items
         this.renderBoard();
     }
 
     renderBoard() {
-        // Clear board but keep reference to avoid layout thrashing if possible
         this.boardElement.innerHTML = '';
         this.piles.forEach((count, i) => {
             const pileDiv = document.createElement('div');
@@ -168,7 +201,6 @@ class NimGame {
             for (let j = 0; j < count; j++) {
                 const item = document.createElement('div');
                 item.className = 'item';
-                // Only disable if it's not human turn OR game is over
                 if (!this.isHumanTurn || !this.gameActive) {
                     item.classList.add('disabled');
                 }
@@ -193,7 +225,7 @@ class NimGame {
     }
 
     highlightPotentialMove(pileIdx, itemIdx) {
-        if (!this.isHumanTurn) return;
+        if (!this.isHumanTurn || !this.gameActive) return;
         const piles = this.boardElement.querySelectorAll('.pile');
         const items = piles[pileIdx].querySelectorAll('.item');
         for (let k = 0; k <= itemIdx; k++) {
@@ -209,8 +241,9 @@ class NimGame {
     endGame(message) {
         this.gameActive = false;
         this.winnerText.textContent = message;
-        this.finalStateText.textContent = `Final Piles: ${this.piles.join(', ')}`;
+        this.finalStateText.textContent = `Final State: All items removed.`;
         this.overlay.classList.remove('hidden');
+        this.statusElement.textContent = message;
     }
 }
 

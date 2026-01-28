@@ -36,7 +36,7 @@ body {
     height: 100%;
     z-index: -1;
     background: radial-gradient(circle at 20% 30%, #1e1b4b 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, #312e81 0%, transparent 40%);
+        radial-gradient(circle at 80% 70%, #312e81 0%, transparent 40%);
     opacity: 0.6;
 }
 
@@ -54,8 +54,13 @@ body {
 }
 
 @keyframes pulse {
-    0% { transform: translate(-50%, -50%) scale(1); }
-    100% { transform: translate(-50%, -50%) scale(1.2); }
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.2);
+    }
 }
 
 /* Glassmorphism Utilities */
@@ -89,14 +94,69 @@ header {
     letter-spacing: -1px;
     background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--secondary) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 0 20px var(--primary-glow));
 }
 
 .subtitle {
     color: var(--text-muted);
-    font-size: 1.2rem;
-    margin-top: 0.5rem;
+    font-size: 1.1rem;
+    margin-top: 0.2rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.logo-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
+    filter: drop-shadow(0 0 10px var(--primary-glow));
+}
+
+/* Game Settings */
+.game-settings {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.setting-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.setting-group label {
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.custom-select {
+    background: var(--bg-dark);
+    color: var(--text-main);
+    border: 1px solid var(--glass-border);
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.custom-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
 }
 
 .game-info {
@@ -137,6 +197,14 @@ header {
     flex-direction: column-reverse;
     gap: 0.75rem;
     align-items: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 20px;
+    transition: background 0.3s;
+}
+
+.pile:hover {
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .item {
@@ -147,7 +215,7 @@ header {
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .item:hover {
@@ -173,14 +241,46 @@ header {
     color: var(--text-muted);
 }
 
-/* Controls */
+/* Controls and Status */
 .controls {
-    padding: 1.5rem;
+    padding: 2rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 1.5rem;
+}
+
+.status-container {
+    text-align: center;
+}
+
+.status-message {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+.ai-thought {
+    font-size: 0.9rem;
+    color: var(--primary);
+    font-style: italic;
+    animation: blink 1.5s infinite;
+}
+
+.ai-thought.hidden {
+    display: none;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
 }
 
 .status-message {
@@ -222,10 +322,32 @@ header {
 
 /* Footer */
 footer {
-    padding: 1rem;
+    padding: 1.5rem;
     text-align: center;
-    font-size: 0.9rem;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.badge {
+    background: var(--glass-bg);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    border: 1px solid var(--glass-border);
     color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 /* Overlay */
@@ -268,8 +390,21 @@ footer {
 
 /* Responsive */
 @media (max-width: 600px) {
-    .glow-text { font-size: 2.5rem; }
-    .game-board { gap: 1rem; padding: 1rem; }
-    .item { width: 45px; height: 25px; }
-    .app-container { padding: 1rem; }
+    .glow-text {
+        font-size: 2.5rem;
+    }
+
+    .game-board {
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .item {
+        width: 45px;
+        height: 25px;
+    }
+
+    .app-container {
+        padding: 1rem;
+    }
 }
