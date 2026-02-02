@@ -9,7 +9,7 @@ class NimGame {
         this.memo = new Map();
         this.isHumanTurn = true;
         this.gameActive = true;
-        this.difficulty = 'hard';
+        this.gameActive = true;
 
         // DOM Elements
         this.boardElement = document.getElementById('game-board');
@@ -18,7 +18,7 @@ class NimGame {
         this.turnText = document.getElementById('turn-text');
         this.turnIndicator = document.getElementById('turn-indicator');
         this.resetBtn = document.getElementById('reset-btn');
-        this.difficultySelect = document.getElementById('difficulty');
+        // valid selector removed from HTML
         this.overlay = document.getElementById('game-over-overlay');
         this.playAgainBtn = document.getElementById('play-again-btn');
         this.winnerText = document.getElementById('winner-text');
@@ -31,10 +31,6 @@ class NimGame {
         this.renderBoard();
         this.resetBtn.addEventListener('click', () => this.resetGame());
         this.playAgainBtn.addEventListener('click', () => this.resetGame());
-        this.difficultySelect.addEventListener('change', (e) => {
-            this.difficulty = e.target.value;
-            this.resetGame();
-        });
         this.updateTurnUI();
     }
 
@@ -150,16 +146,14 @@ class NimGame {
         if (!this.gameActive) return;
 
         let move;
-        if (this.difficulty === 'easy') {
-            move = this.getRandomMove(this.piles);
-        } else if (this.difficulty === 'medium') {
-            if (Math.random() < 0.5) {
-                move = this.getBestMove(this.piles);
-            } else {
-                move = this.getRandomMove(this.piles);
-            }
-        } else { // hard
+        // Single Balanced Strategy: 50% Optimal, 50% Random
+        // This ensures "Equal Favor" - valid for both sides.
+        if (Math.random() < 0.5) {
             move = this.getBestMove(this.piles);
+            console.log("AI Chose: Optimal Strategy");
+        } else {
+            move = this.getRandomMove(this.piles);
+            console.log("AI Chose: Random Strategy");
         }
 
         if (move) {

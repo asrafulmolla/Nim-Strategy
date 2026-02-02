@@ -62,31 +62,20 @@ class NimGame:
         return best_move
 
 
-def ai_move(game, state, difficulty):
+def ai_move(game, state):
     moves = game.get_possible_moves(state)
 
-    if difficulty == "easy":
-        return random.choice(moves)
-
-    elif difficulty == "medium":
-        if random.random() < 0.5:
-            return game.get_best_move(state)
-        else:
-            return random.choice(moves)
-
-    else:  # hard
+    # Balanced Strategy: 50% Optimal, 50% Random
+    if random.random() < 0.5:
         return game.get_best_move(state)
+    else:
+        return random.choice(moves)
 
 
 def play_game():
     print("===================================")
     print("      NIM GAME (Human vs AI)       ")
     print("===================================")
-
-    difficulty = input("Choose Difficulty (easy / medium / hard): ").lower()
-    if difficulty not in ["easy", "medium", "hard"]:
-        print("Invalid choice! Defaulting to MEDIUM.")
-        difficulty = "medium"
 
     piles = [3, 4, 5]
     game = NimGame(tuple(piles))
@@ -115,7 +104,7 @@ def play_game():
 
         else:
             print("--- AI TURN ---")
-            move = ai_move(game, state, difficulty)
+            move = ai_move(game, state)
             print(f"AI removed {move[1]} from pile {move[0]}")
             state = game.apply_move(state, move)
             human_turn = True
