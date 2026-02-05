@@ -93,14 +93,14 @@ def play_game():
                 a = int(input("Amount to remove: "))
 
                 if p < 0 or p >= len(state) or a < 1 or a > state[p]:
-                    print("❌ Invalid move!")
+                    print("Invalid move!")
                     continue
 
                 state = game.apply_move(state, (p, a))
                 human_turn = False
 
             except ValueError:
-                print("❌ Enter valid numbers!")
+                print("Enter valid numbers!")
 
         else:
             print("--- AI TURN ---")
@@ -112,9 +112,9 @@ def play_game():
     print("\n===================================")
     print("GAME OVER")
     if human_turn:
-        print("🤖 AI took the last item. AI WINS!")
+        print("AI took the last item. AI WINS!")
     else:
-        print("🎉 You took the last item. YOU WIN!")
+        print("You took the last item. YOU WIN!")
     print("===================================")
 
 
